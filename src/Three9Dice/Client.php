@@ -1,132 +1,90 @@
 <?php namespace Three9Dice;
 
+use Three9Dice\Interfaces\ConnectorInterface;
 use Three9Dice\Interfaces\ClientInterface;
+use Three9Dice\Interfaces\UserInterface;
 
 /**
  * Class Client
  * @package Three9Dice
  */
-class Client // implements ClientInterface
+class Client implements ClientInterface
 {
+	/** @var  UserInterface $user */
+	private $user;
+
 	/**
-	 * @var string
+	 * @var ConnectorInterface $connector
 	 */
-	private $apiKey;
+	private $connector;
 
 	/**
 	 * @var string
 	 */
-	private $username;
-
-	/**
-	 * @var string
-	 */
-	private $password;
-
-	/**
-	 * @var string
-	 */
-	private $totp;
+	private $sessionCookie;
 
 	/**
 	 * Client constructor.
-	 *
-	 * @param string $apiKey
-	 * @param string $username
-	 * @param string $password
-	 * @param bool $totp
 	 */
-	public function __construct($apiKey, $username, $password, $totp = null )
+	public function __construct( UserInterface $user )
 	{
-		$this->setApiKey($apiKey);
-		$this->setUsername($username);
-		$this->setPassword($password);
-		$this->setTotp($totp);
-
+		$this->setUser($user);
+		$this->createConnector();
 		$this->login();
 	}
 
 	/**
-	 * @return string
-	 */
-	public function getApiKey()
-	{
-		return $this->apiKey;
-	}
-
-	/**
-	 * @param string $apiKey
+	 * @param UserInterface $user
 	 *
 	 * @return $this
 	 */
-	public function setApiKey( $apiKey )
+	public function setUser(UserInterface $user)
 	{
-		$this->apiKey = $apiKey;
+		$this->user = $user;
 		return $this;
 	}
 
 	/**
-	 * @return string
+	 * @return UserInterface
 	 */
-	public function getUsername()
+	public function getUser()
 	{
-		return $this->username;
+		return $this->user;
+	}
+
+
+	/**
+	 * @return Connector
+	 */
+	protected function createConnector()
+	{
+		return $this->connector = new Connector();
 	}
 
 	/**
-	 * @param string $username
-	 *
-	 * @return Client
+	 * @return ConnectorInterface
 	 */
-	public function setUsername( $username)
+	public function getConnector()
 	{
-		$this->username = $username;
-		return $this;
+		return $this->connector;
 	}
 
 	/**
-	 * @return string
-	 */
-	public function getPassword()
-	{
-		return $this->password;
-	}
-
-	/**
-	 * @param string $password
-	 *
-	 * @return Client
-	 */
-	public function setPassword( $password)
-	{
-		$this->password = $password;
-		return $this;
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getTotp()
-	{
-		return $this->totp;
-	}
-
-	/**
-	 * @param mixed $totp
-	 *
-	 * @return Client
-	 */
-	public function setTotp( $totp )
-	{
-		$this->totp = $totp;
-		return $this;
-	}
-
-	/**
-	 * Login
+	 * @return bool
 	 */
 	protected function login()
 	{
+		$params = [
+			'Key' => $this->getUser()->getApiKey(),
+		    'Username' => $this->getUser()->getUsername(),
+		    'Password' => $this->getUser()->getPassword()
+		];
+		if( $totp = $this->getUser()->getTotp() ) $params['Totp'] = $totp;
+
+		$result = $this->getConnector()->request( Connector::METHOD_LOGIN, $params );
+
+		$sessionCookie = $result['SessionCookie'];
+
 		return true;
 	}
 

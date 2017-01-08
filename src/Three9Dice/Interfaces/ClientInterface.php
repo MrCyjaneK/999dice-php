@@ -7,48 +7,15 @@
 interface ClientInterface
 {
 	/**
-	 * @return string
-	 */
-	public function getApiKey();
-
-	/**
-	 * @param string $apiKey
+	 * @param UserInterface $user
+	 *
 	 * @return self
 	 */
-	public function setApiKey( $apiKey );
+	public function setUser( UserInterface $user );
 
 	/**
-	 * @return string
+	 * @return UserInterface
 	 */
-	public function getUsername();
-
-	/**
-	 * @param string $username
-	 * @return self
-	 */
-	public function setUsername( $username );
-
-	/**
-	 * @return string
-	 */
-	public function getPassword();
-
-	/**
-	 * @param string $password
-	 * @return string
-	 */
-	public function setPassword( $password);
-
-	/**
-	 * @return self
-	 */
-	public function getTotp();
-
-	/**
-	 * @param string $password
-	 * @return string|null
-	 */
-	public function setTotp( $totp );
-
+	public function getUser();
 
 }
