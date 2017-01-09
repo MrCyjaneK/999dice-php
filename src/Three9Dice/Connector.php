@@ -11,22 +11,6 @@ use Three9Dice\Interfaces\ConnectorInterface;
  */
 class Connector implements ConnectorInterface
 {
-	const METHOD_LOGIN = 'Login';
-
-	const METHOD_CHANGE_PASSWORD            = 'ChangePassword';
-	const METHOD_UPDATE_EMAIL               = 'UpdateEmail';
-	const METHOD_UPDATE_EMERGENCY_ADDRESS   = 'UpdateEmergencyAddress';
-
-	const METHOD_WITHDRAW               = 'Withdraw';
-	const METHOD_GET_DEPOSIT_ADDRESS    = 'GetDepositAddress';
-	const METHOD_GET_BALANCE            = 'GetBalance';
-	const METHOD_GET_SERVER_SEED_HASH   = 'GetServerSeedHash';
-
-	const METHOD_PLACE_BET              = 'PlaceBet';
-	const METHOD_PLACE_AUTOMATED_BET    = 'PlaceAutomatedBets';
-
-	const METHOD_GET_CURRENCIES = 'GetCurrencies';
-
 	const DOMAIN = 'https://www.999dice.com/';
 	const URL = '/api/web.aspx';
 
@@ -129,9 +113,6 @@ class Connector implements ConnectorInterface
 		{
 			throw new RequestException($error);
 		}
-
-		print_r($body);
-		echo "\n";
 
 		return $body;
 	}

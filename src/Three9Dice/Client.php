@@ -1,72 +1,30 @@
 <?php namespace Three9Dice;
 
-use Three9Dice\Interfaces\ConnectorInterface;
-use Three9Dice\Interfaces\ClientInterface;
+use Three9Dice\Bet\Bet;
+use Three9Dice\Component\AbstractClient;
+use Three9Dice\Exception\Three9DiceException;
+use Three9Dice\Interfaces\BetInterface;
 use Three9Dice\Interfaces\UserInterface;
 
 /**
  * Class Client
  * @package Three9Dice
  */
-class Client implements ClientInterface
+class Client extends AbstractClient
 {
-	/** @var  UserInterface $user */
-	private $user;
-
-	/**
-	 * @var ConnectorInterface $connector
-	 */
-	private $connector;
-
-	/**
-	 * @var string
-	 */
-	private $sessionCookie;
 
 	/**
 	 * Client constructor.
 	 */
-	public function __construct( UserInterface $user )
+	public function __construct( UserInterface $user = null )
 	{
-		$this->setUser($user);
 		$this->createConnector();
-		$this->login();
-	}
 
-	/**
-	 * @param UserInterface $user
-	 *
-	 * @return $this
-	 */
-	public function setUser(UserInterface $user)
-	{
-		$this->user = $user;
-		return $this;
-	}
-
-	/**
-	 * @return UserInterface
-	 */
-	public function getUser()
-	{
-		return $this->user;
-	}
-
-
-	/**
-	 * @return Connector
-	 */
-	protected function createConnector()
-	{
-		return $this->connector = new Connector();
-	}
-
-	/**
-	 * @return ConnectorInterface
-	 */
-	public function getConnector()
-	{
-		return $this->connector;
+		if( $user )
+		{
+			$this->setUser($user);
+			$this->login();
+		}
 	}
 
 	/**
@@ -81,11 +39,39 @@ class Client implements ClientInterface
 		];
 		if( $totp = $this->getUser()->getTotp() ) $params['Totp'] = $totp;
 
-		$result = $this->getConnector()->request( Connector::METHOD_LOGIN, $params );
+		$result = $this->getConnector()->request( Constant::METHOD_LOGIN, $params );
 
-		$sessionCookie = $result['SessionCookie'];
-
+		$this->setSessionCookie($result['SessionCookie']);
 		return true;
+	}
+
+	/**
+	 * @param $method
+	 * @param $params
+	 *
+	 * @return array
+	 * @throws Three9DiceException
+	 */
+	public function sessionRequest($method, $params)
+	{
+		$sessionCookie = $this->getSessionCookie();
+		if( empty($sessionCookie) )
+		{
+			throw new Three9DiceException('Invalid or empty client session cookie');
+		}
+		$params = array_merge([ 's' => $sessionCookie ], $params);
+
+		return $this->getConnector()->request($method, $params);
+	}
+
+	/**
+	 * @param Bet $bet
+	 *
+	 * @return array
+	 */
+	public function placeBet( Bet $bet )
+	{
+		return $this->sessionRequest( Constant::METHOD_PLACE_BET, $bet->getRequestParams() );
 	}
 
 
