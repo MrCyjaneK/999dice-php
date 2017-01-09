@@ -117,3 +117,4 @@ dwsync.xml
 dw_php_codehinting.config
 *.mno
 /composer.lock
+/examples/config.json

@@ -49,7 +49,7 @@ class Bet extends AbstractBet
 	public function getRequestParams()
 	{
 		return [
-			'PayIn'     => $this->getAmount(),
+			'PayIn'     => ceil($this->getAmount()),
 			'Currency'  => $this->getCurrency(),
 
 			'Low'   => $this->getGuessRange()->getLow(),

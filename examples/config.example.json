@@ -1,0 +1,11 @@
+{
+    "apiKey": "Your API Key",
+    "username": "Your Username",
+    "password": "Your Password",
+
+    "strategy": {
+        "currency": "eth",
+        "amount": 4,
+        "depth_orient": false
+    }
+}

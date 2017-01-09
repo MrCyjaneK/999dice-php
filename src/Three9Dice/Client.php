@@ -74,5 +74,19 @@ class Client extends AbstractClient
 		return $this->sessionRequest( Constant::METHOD_PLACE_BET, $bet->getRequestParams() );
 	}
 
+	/**
+	 * @param string $currency
+	 *
+	 * @return array
+	 */
+	public function getBalance( $currency = Constant::CURRENCY_BTC )
+	{
+		return $this->sessionRequest( Constant::METHOD_GET_BALANCE, [
+			"Currency" => $currency,
+		    "Referrals" => 1,
+		    "Stats" => 1
+		] );
+	}
+
 
 }
