@@ -27,6 +27,7 @@ $martingaleBot = new Morok714(
     isset($strategy['depth_orient']) ? $strategy['depth_orient'] : false
 );
 
+$stopPercent = isset($strategy['stop_percent']) ? $strategy['stop_percent'] : false;
 $currencyRate = 1235;
 
 echo "\n";
@@ -36,7 +37,7 @@ $betPerSec = 0;
  * @param Morok714 $bot
  * @param $result
  */
-$betHandler = function (Morok714 $bot, $result) use ($currencyRate, &$betPerSec)
+$betHandler = function (Morok714 $bot, $result) use ($currencyRate, &$betPerSec, $stopPercent)
 {
     $profit = \Three9Dice\Helper::satoshi2Btc($bot->getProfit()) * $currencyRate;
 
@@ -78,11 +79,11 @@ $betHandler = function (Morok714 $bot, $result) use ($currencyRate, &$betPerSec)
     //	replaceOut($str);
     echo $str;
 
-//	if($bot->getProfit() > $bot->getStartBalance() * 0.5)
-//	{
-//		$bot->stop();
-//		echo "\n\n - Done bot work with a profit: " . number_format(Helper::satoshi2Btc($bot->getProfit()), 8) . "\n\n";
-//	}
+	if($stopPercent && $bot->getProfit() > $bot->getStartBalance() * $stopPercent)
+	{
+		$bot->stop();
+		echo "\n\n - Done bot work with a profit: " . number_format(Helper::satoshi2Btc($bot->getProfit()), 8) . "\n\n";
+	}
 };
 
 try
