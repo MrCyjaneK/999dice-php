@@ -37,7 +37,7 @@ class Morok714 extends AbstractBot
 	private $currentAmount;
 
 	private $strategy = [
-		0 => [28, 0.4, 0]
+		0 => [11, 0.18, 0]
 	];
 
 	private $curChance = 0;
@@ -192,6 +192,8 @@ class Morok714 extends AbstractBot
 				{
 					$this->maxValues[self::BALANCE] = $this->getBalance();
 				}
+
+				$this->iterateWinCount();
 			}
 
 			$this->iterateBetCount();

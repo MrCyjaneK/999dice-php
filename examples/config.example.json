@@ -4,8 +4,8 @@
     "password": "Your Password",
 
     "strategy": {
-        "currency": "eth",
-        "amount": 4,
+        "currency": "doge",
+        "amount": 100,
         "depth_orient": false,
         "stop_percent": 0.2
     }

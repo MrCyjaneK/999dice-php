@@ -54,7 +54,7 @@ $betHandler = function (Morok714 $bot, $result) use ($currencyRate, &$betPerSec,
         "\n\n" .
         " Profit:     [%15s] [%8s] - [%12s]\n\n" .
         " Bet count:  [%6d] (Max depth: %d)\n" .
-        " Total Bets: [%6d] (%s bet/s)\n\n" .
+        " Total Bets: [%6d] [W:%6d] (%s bet/s)\n\n" .
         " Start BET:  [%11s]\n" .
         "====================================================\n",
         number_format(Helper::satoshi2Btc($bot->getProfit()), 8),
@@ -63,6 +63,7 @@ $betHandler = function (Morok714 $bot, $result) use ($currencyRate, &$betPerSec,
         $bot->getCurrentDepth(),
         $bot->getMaxDepth(),
         $bot->getBetCount(),
+        $bot->getWinCount(),
         number_format($betPerSec, 1),
         number_format($bot->getStartAmount(), 0)
     );

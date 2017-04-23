@@ -22,6 +22,9 @@ abstract class AbstractBot
 	/** @var int $betsCount */
 	private $betsCount = 0;
 
+	/** @var int $winCount */
+	private $winCount = 0;
+
 	/**
 	 * @var \DateTime $startWorkTime
 	 */
@@ -127,6 +130,14 @@ abstract class AbstractBot
 		$this->betsCount++;
 	}
 
+    /**
+     *
+     */
+	protected function iterateWinCount()
+    {
+        $this->winCount++;
+    }
+
 	/**
 	 * @return int
 	 */
@@ -135,5 +146,11 @@ abstract class AbstractBot
 		return $this->betsCount;
 	}
 
-
+    /**
+     * @return int
+     */
+	public function getWinCount()
+    {
+        return $this->winCount;
+    }
 }
