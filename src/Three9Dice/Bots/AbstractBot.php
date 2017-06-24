@@ -1,4 +1,6 @@
-<?php namespace Three9Dice\Bots;
+<?php
+
+namespace Three9Dice\Bots;
 
 use Three9Dice\Client;
 use Three9Dice\Constant;

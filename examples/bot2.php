@@ -18,7 +18,7 @@ $martingaleBot = new MartingaleBot(
     isset($strategy['depth_orient']) ? $strategy['depth_orient'] : false
 );
 
-$currencyRate = 0.000532;
+$currencyRate = 0.0031;
 
 echo "\n";
 
@@ -27,12 +27,10 @@ $betPerSec = 0;
  * @param MartingaleBot $bot
  * @param $result
  */
-$betHandler = function (MartingaleBot $bot, $result) use ($currencyRate, &$betPerSec)
-{
+$betHandler = function (MartingaleBot $bot, $result) use ($currencyRate, &$betPerSec) {
     $profit = \Three9Dice\Helper::satoshi2Btc($bot->getProfit()) * $currencyRate;
 
-    if(0 == ($bot->getBetCount() % 50))
-    {
+    if(0 == ($bot->getBetCount() % 50)) {
         $now = time();
         $timeDelay = ($now - $bot->getStartWorkTime()->getTimestamp());
         $betPerSec = $timeDelay ? $bot->getBetCount() / $timeDelay : 0;
@@ -50,12 +48,9 @@ $betHandler = function (MartingaleBot $bot, $result) use ($currencyRate, &$betPe
     );
 };
 
-try
-{
+try {
     $martingaleBot->start($betHandler);
-}
-catch(\Three9Dice\Exception\Three9DiceException $e)
-{
+} catch(\Three9Dice\Exception\Three9DiceException $e) {
     echo $e->getMessage();
     die;
 }

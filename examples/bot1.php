@@ -11,8 +11,7 @@ $apiKey = $config['apiKey'];
 $username = $config['username'];
 $password = $config['password'];
 
-function replaceOut($str)
-{
+function replaceOut($str) {
     $numNewLines = substr_count($str, "\n");
     echo chr(27) . "[0G";
     echo $str;
@@ -28,7 +27,7 @@ $martingaleBot = new Morok714(
 );
 
 $stopPercent = isset($strategy['stop_percent']) ? $strategy['stop_percent'] : false;
-$currencyRate = 1235;
+$currencyRate = 0.0031;
 
 echo "\n";
 
@@ -37,12 +36,10 @@ $betPerSec = 0;
  * @param Morok714 $bot
  * @param $result
  */
-$betHandler = function (Morok714 $bot, $result) use ($currencyRate, &$betPerSec, $stopPercent)
-{
+$betHandler = function (Morok714 $bot, $result) use ($currencyRate, &$betPerSec, $stopPercent) {
     $profit = \Three9Dice\Helper::satoshi2Btc($bot->getProfit()) * $currencyRate;
 
-    if(0 == ($bot->getBetCount() % 5))
-    {
+    if(0 == ($bot->getBetCount() % 5)) {
         $now = time();
         $timeDelay = ($now - $bot->getStartWorkTime()->getTimestamp());
         $betPerSec = $timeDelay ? $bot->getBetCount() / $timeDelay : 0;
@@ -80,19 +77,15 @@ $betHandler = function (Morok714 $bot, $result) use ($currencyRate, &$betPerSec,
     //	replaceOut($str);
     echo $str;
 
-	if($stopPercent && $bot->getProfit() > $bot->getStartBalance() * $stopPercent)
-	{
+	if($stopPercent && $bot->getProfit() > $bot->getStartBalance() * $stopPercent) {
 		$bot->stop();
 		echo "\n\n - Done bot work with a profit: " . number_format(Helper::satoshi2Btc($bot->getProfit()), 8) . "\n\n";
 	}
 };
 
-try
-{
+try {
     $martingaleBot->start($betHandler);
-}
-catch(\Three9Dice\Exception\Three9DiceException $e)
-{
+} catch(\Three9Dice\Exception\Three9DiceException $e) {
     echo $e->getMessage() . "\n";
     die;
 }

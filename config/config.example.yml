@@ -1,0 +1,14 @@
+
+# 999Dice credential
+# ==========================
+
+cred:
+  apiKey: "Your API Key"
+  username: "Your Username"
+  password: "Your Password"
+
+# Strategy configuration
+# ==========================
+strategy:
+  currency: doge
+  amount: 100
