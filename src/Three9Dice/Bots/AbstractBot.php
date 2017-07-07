@@ -3,7 +3,6 @@
 namespace Three9Dice\Bots;
 
 use Three9Dice\Client;
-use Three9Dice\Constant;
 use Three9Dice\Interfaces\UserInterface;
 
 /**
