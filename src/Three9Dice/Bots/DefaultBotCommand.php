@@ -67,9 +67,8 @@ class DefaultBotCommand extends Command
                 $this->config->getUsername(),
                 $this->config->getPassword()
             ),
-            $this->config->get('strategy.amount'),
-            $this->config->get('strategy.currency'),
-            false
+            $this->config->get('strategy.amountCoef'),
+            $this->config->get('strategy.currency')
         );
 
 

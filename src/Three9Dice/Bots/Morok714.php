@@ -30,9 +30,6 @@ class Morok714 extends AbstractBot
     /** @var int */
     private $maxDepth = 0;
 
-    /** @var null $depthOrient */
-    private $depthOrient = null;
-
     /** @var int */
     private $currentAmount;
 
@@ -53,24 +50,28 @@ class Morok714 extends AbstractBot
      * MartingaleBot constructor.
      *
      * @param UserInterface $user
-     * @param int           $startAmount
+     * @param float         $startAmountCoef
      * @param string        $currency
-     * @param bool          $depthOrient
      */
     public function __construct(
         UserInterface $user,
-        $startAmount = 1,
-        $currency = Constant::CURRENCY_BTC,
-        $depthOrient = false
+        $startAmountCoef = 0.0000001,
+        $currency = Constant::CURRENCY_BTC
     ) {
         parent::__construct($user);
 
         $this->currency = $currency;
-        $this->startAmount = $startAmount;
-        $this->depthOrient = $depthOrient;
 
         $balance = $this->getClient()->getBalance($this->currency);
         $this->setStartBalance($balance['Balance']);
+
+        $startAmount = $this->getStartBalance() * $startAmountCoef;
+
+        if ($startAmount < 1 || $startAmount > $this->getStartBalance() / 1000) {
+            throw new \InvalidArgumentException("Invalid amount value: " . $startAmount);
+        }
+
+        $this->startAmount = $startAmount;
     }
 
     /**
