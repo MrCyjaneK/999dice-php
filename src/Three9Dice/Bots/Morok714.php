@@ -232,10 +232,6 @@ class Morok714 extends AbstractBot
 
         $nextBet = $this->getStartAmount();
 
-        if ($depth >= 1) {
-            $nextBet = $this->getStartBalance() * 0.0000001;
-        }
-
         if ($depth > 2) {
             $nextBet = $lastBet * 1.55;
         }
