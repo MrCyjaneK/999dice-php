@@ -190,7 +190,7 @@ class Morok714 extends AbstractBot
             if ($callback) {
                 $callback($this, $betResult);
             }
-            usleep(10000);
+            usleep(5000);
         }
     }
 

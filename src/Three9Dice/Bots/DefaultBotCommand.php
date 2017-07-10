@@ -61,19 +61,40 @@ class DefaultBotCommand extends Command
     {
         $output->writeln('<info>Bot started!</info>');
 
-        $martingaleBot = new Morok714(
-            new User(
-                $this->config->getApiKey(),
-                $this->config->getUsername(),
-                $this->config->getPassword()
-            ),
-            $this->config->get('strategy.amountCoef'),
-            $this->config->get('strategy.currency')
-        );
+        $isWork = true;
 
+        $toRestartTimeout = (int)$this->config->get('strategy.restartTimeout', 10);
+
+        $amountCoef = $this->config->get('strategy.amountCoef');
+        $currency = $this->config->get('strategy.currency');
+        $restartTimeout = $this->config->get('strategy.restart', false);
 
         try {
-            $martingaleBot->start($this->getHandler($output));
+
+            while($isWork) {
+
+                $martingaleBot = new Morok714(
+                    new User(
+                        $this->config->getApiKey(),
+                        $this->config->getUsername(),
+                        $this->config->getPassword()
+                    ),
+                    $amountCoef,
+                    $currency
+                );
+
+                $restartAt = null;
+                if ($restartTimeout) {
+                    $restartAt = (new \DateTime())->getTimestamp() + (int)$restartTimeout;
+                }
+
+                $martingaleBot->start(
+                    $this->getHandler($output, $restartAt)
+                );
+
+                sleep($toRestartTimeout);
+            }
+
         } catch(Three9DiceException $e) {
             echo $e->getMessage() . "\n";
             die;
@@ -83,16 +104,17 @@ class DefaultBotCommand extends Command
 
     /**
      * @param OutputInterface $output
+     * @param int|null        $restartAt
      *
      * @return \Closure
      */
-    private function getHandler(OutputInterface $output)
+    private function getHandler(OutputInterface $output, int $restartAt = null)
     {
         $betPerSec = 0;
         $currencyRate = $this->config->get('currencyRate', 0);
         $stopPercent = $this->config->get('stopPercent', 0.01);
 
-        return function (Morok714 $bot, $result) use ($currencyRate, &$betPerSec, $stopPercent) {
+        return function (Morok714 $bot, array $result) use ($currencyRate, &$betPerSec, $stopPercent, $restartAt) {
             $profit = Helper::satoshi2Btc($bot->getProfit()) * $currencyRate;
 
             if(0 == ($bot->getBetCount() % 5)) {
@@ -133,10 +155,17 @@ class DefaultBotCommand extends Command
             //	replaceOut($str);
             echo $str;
 
-            if($stopPercent && $bot->getProfit() > $bot->getStartBalance() * $stopPercent) {
-                $bot->stop();
-                echo "\n\n - Done bot work with a profit: " . number_format(Helper::satoshi2Btc($bot->getProfit()), 8) . "\n\n";
+            if ($restartAt && $result['PayOut'] > 0) {
+                if (time() >= $restartAt) {
+                    $bot->stop();
+                    echo "\n\n - Restart bot - \n\n";
+                }
             }
+
+//            if($stopPercent && $bot->getProfit() > $bot->getStartBalance() * $stopPercent) {
+//                $bot->stop();
+//                echo "\n\n - Done bot work with a profit: " . number_format(Helper::satoshi2Btc($bot->getProfit()), 8) . "\n\n";
+//            }
         };
     }
 
