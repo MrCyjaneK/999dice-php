@@ -90,7 +90,7 @@ class Client extends AbstractClient
 	 *
 	 * @return array
 	 */
-	public function makeWithdraw( $currency = Constant::CURRENCY_BTC , $address "no")
+	public function makeWithdraw( $currency = Constant::CURRENCY_BTC , $address = "no")
 	{
 		return $this->sessionRequest( Constant::METHOD_WITHDRAW, [
 			"Amount" => $amount,
