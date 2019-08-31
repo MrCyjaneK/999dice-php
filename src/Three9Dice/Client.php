@@ -87,6 +87,11 @@ class Client extends AbstractClient
 		        "Stats" => 1
                 ] );
         }
+        /**
+	 * @param string $currency
+	 *
+	 * @return string
+	 */
 	public function getDeposit( $currency = Constant::CURRENCY_BTC )
 	{
 		return $this->sessionRequest( Constant::METHOD_GET_DEPOSIT_ADDRESS, [
@@ -95,10 +100,11 @@ class Client extends AbstractClient
 	}
         /**
 	 * @param string $currency
-	 *
+	 * @param string $address
+         * @param int    $amount
 	 * @return array
 	 */
-	public function makeWithdraw( $currency = Constant::CURRENCY_BTC , $address = "no")
+	public function makeWithdraw( $currency = Constant::CURRENCY_BTC , $address = "no", $amount = 0)
 	{
 		return $this->sessionRequest( Constant::METHOD_WITHDRAW, [
 			"Amount" => $amount,
